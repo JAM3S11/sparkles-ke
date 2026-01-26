@@ -143,8 +143,8 @@ const ServicesPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Category Description */}
-      {selectedCategory && (
+      {/* Category/Search Description */}
+      {(searchTerm || selectedCategory) && (
         <section className="bg-emerald-50 border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-start gap-4">
@@ -152,12 +152,34 @@ const ServicesPage: React.FC = () => {
                 <Package className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  {serviceCategories.find(cat => cat.id === selectedCategory)?.name}
-                </h3>
-                <p className="text-gray-600">
-                  {serviceCategories.find(cat => cat.id === selectedCategory)?.description}
-                </p>
+                {searchTerm && selectedCategory ? (
+                  <>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Search Results for "{searchTerm}" in {serviceCategories.find(cat => cat.id === selectedCategory)?.name}
+                    </h3>
+                    <p className="text-gray-600">
+                      {serviceCategories.find(cat => cat.id === selectedCategory)?.description}
+                    </p>
+                  </>
+                ) : searchTerm ? (
+                  <>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      Search Results for "{searchTerm}"
+                    </h3>
+                    <p className="text-gray-600">
+                      Found services matching your search criteria
+                    </p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {serviceCategories.find(cat => cat.id === selectedCategory)?.name}
+                    </h3>
+                    <p className="text-gray-600">
+                      {serviceCategories.find(cat => cat.id === selectedCategory)?.description}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
           </div>
