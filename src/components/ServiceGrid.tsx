@@ -22,6 +22,13 @@ const ServiceGrid: React.FC<ServiceGridProps> = ({ category, limit, searchTerm =
   const displayServices = limit ? filteredServices.slice(0, limit) : filteredServices;
 
   // When no results show the below
+  if(displayServices.length === 0){
+    return (
+      <div className='text-center py-20'>
+        <div className='text-gray-500 text-lg font-bold tracking-wide'>No service founding matching your criteria...</div>
+      </div>
+    )
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
