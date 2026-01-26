@@ -144,7 +144,7 @@ const ServicesPage: React.FC = () => {
       </section>
 
       {/* Category Description */}
-      {searchTerm && selectedCategory && (
+      {selectedCategory && (
         <section className="bg-emerald-50 border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-start gap-4">
@@ -167,7 +167,8 @@ const ServicesPage: React.FC = () => {
       {/* Services Grid */}
       <section className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <ServiceGrid category={selectedCategory || undefined} />
+          <ServiceGrid category={selectedCategory || undefined}
+            searchTerm={searchTerm} />
           
           {selectedCategory && (
             <div className="text-center mt-8">

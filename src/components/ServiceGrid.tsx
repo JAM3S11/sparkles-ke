@@ -5,14 +5,23 @@ import ServiceCard from './ServiceCard';
 interface ServiceGridProps {
   category?: string;
   limit?: number;
+  searchTerm?:string;
 }
 
-const ServiceGrid: React.FC<ServiceGridProps> = ({ category, limit }) => {
-  const filteredServices = category 
-    ? services.filter(service => service.category === category)
-    : services;
+const ServiceGrid: React.FC<ServiceGridProps> = ({ category, limit, searchTerm = '' }) => {
+  const filteredServices = services.filter(service => {
+    const matchCategories = !category || service.category === category;
+
+    const matchSearches = !searchTerm ||
+      service.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
+      service.description.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchCategories && matchSearches
+  })
     
   const displayServices = limit ? filteredServices.slice(0, limit) : filteredServices;
+
+  // When no results show the below
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
