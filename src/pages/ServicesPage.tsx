@@ -144,7 +144,7 @@ const ServicesPage: React.FC = () => {
       </section>
 
       {/* Category Description */}
-      {selectedCategory && (
+      {searchTerm && selectedCategory && (
         <section className="bg-emerald-50 border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="flex items-start gap-4">
