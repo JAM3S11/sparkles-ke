@@ -10,7 +10,7 @@ const Footer: React.FC = () => {
           <div className="col-span-1 md:col-span-2">
             <div className="mb-6">
               <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-amber-400 to-amber-600 bg-clip-text text-transparent">
-                Hospitality Kenya
+                Sparkles Kenya
               </h3>
               <p className="text-gray-300 leading-relaxed text-lg">
                 Your trusted partner for premium hospitality supplies across Kenya. We deliver excellence from industrial detergents to luxury amenities.
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
         <div className="border-t border-gray-700 mt-12 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-center md:text-left mb-4 md:mb-0">
-              © {new Date().getFullYear()} Hospitality Kenya. All rights reserved.
+              © {new Date().getFullYear()} Sparkles Kenya. All rights reserved.
             </p>
             <div className="flex space-x-6 text-gray-400 text-sm">
               <a href="#" className="hover:text-amber-400 transition-colors">Privacy Policy</a>

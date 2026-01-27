@@ -42,7 +42,7 @@ const Navigation: React.FC = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <h1 className="text-xl font-bold text-emerald-700">
-                Hospitality Kenya
+                Sparkles
               </h1>
             </div>
           </div>

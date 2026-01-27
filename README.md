@@ -1,6 +1,6 @@
-# Hospitality Kenya
+# Sparkles Kenya
 
-Hospitality Kenya is a premium provider of hospitality supplies, delivering excellence from industrial detergents to luxury amenities across Kenya.
+Sparkles Kenya is a premium provider of hospitality supplies, delivering excellence from industrial detergents to luxury amenities across Kenya.
 
 ## 🚀 Features
 
@@ -50,4 +50,4 @@ Hospitality Kenya is a premium provider of hospitality supplies, delivering exce
 
 ## 📄 License
 
-© 2026 Hospitality Kenya. All rights reserved.
+© 2026 Sparkles Kenya. All rights reserved.
