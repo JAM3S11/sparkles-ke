@@ -50,7 +50,7 @@ const Navigation: React.FC = () => {
           {/* Desktop Navigation */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              {navItems.map((item) => {
+              {navItems.filter((item) => item.path !== "/").map((item) => {
                 const Icon = item.icon;
                 return (
                   <Link
