@@ -115,7 +115,7 @@ const Navigation: React.FC = () => {
             <div className="flex-shrink-0">
               <Link 
                 to="/" 
-                className="text-xl font-bold text-emerald-700 hover:text-emerald-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 rounded-md px-2 py-1"
+                className="text-xl font-bold text-emerald-700 hover:text-emerald-800 transition-colors duration-200 focus:outline-none rounded-md px-2 py-1"
                 aria-label="Sparkles - Home"
               >
                 Sparkles
