@@ -41,9 +41,9 @@ const Navigation: React.FC = () => {
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-emerald-700">
+              <Link to="/" className="text-xl font-bold text-emerald-700">
                 Sparkles
-              </h1>
+              </Link>
             </div>
           </div>
 
