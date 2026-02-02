@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Package, Menu, X, Info, Phone } from 'lucide-react';
+import { Home, Package, Menu, X, Info, Phone, ChevronRight } from 'lucide-react';
 
-// 1. Move static data outside to prevent re-creation on every render
 const NAV_ITEMS = [
   { id: 'home', label: 'Home', icon: Home, path: '/' },
   { id: 'services', label: 'Services', icon: Package, path: '/services' },
@@ -13,48 +12,41 @@ const NAV_ITEMS = [
 const Navigation: React.FC = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
+  
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   const [isScrolled, setIsScrolled] = React.useState(false);
   const [activeIndex, setActiveIndex] = React.useState(-1);
-  const drawerRef = React.useRef<HTMLDivElement>(null);
+  
   const itemRefs = React.useRef<(HTMLAnchorElement | null)[]>([]);
 
-  // Initialize item refs array
-  React.useEffect(() => {
-    itemRefs.current = NAV_ITEMS.map(() => null);
-  }, []);
-
-  // Determine current page ID
   const currentPageId = React.useMemo(() => 
     NAV_ITEMS.find(item => item.path === pathname)?.id || 'home', 
-    [pathname]);
+  [pathname]);
 
-  // Handle scroll with better cleanup
+  // Optimized Scroll Handler
   React.useEffect(() => {
-    let timeoutId: number;
+    let frameId: number;
     const handleScroll = () => {
-      cancelAnimationFrame(timeoutId);
-      timeoutId = requestAnimationFrame(() => {
-        setIsScrolled(window.scrollY > 20);
-      });
+      cancelAnimationFrame(frameId);
+      frameId = requestAnimationFrame(() => setIsScrolled(window.scrollY > 20));
     };
-
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      cancelAnimationFrame(frameId);
+    };
   }, []);
 
-  // Keyboard navigation logic
+  // Keyboard Accessibility
   const handleKeyDown = React.useCallback((e: React.KeyboardEvent) => {
     if (!isMobileMenuOpen) return;
     
     switch (e.key) {
       case 'ArrowDown':
-      case 'ArrowRight':
         e.preventDefault();
         setActiveIndex(prev => (prev + 1) % NAV_ITEMS.length);
         break;
       case 'ArrowUp':
-      case 'ArrowLeft':
         e.preventDefault();
         setActiveIndex(prev => (prev - 1 + NAV_ITEMS.length) % NAV_ITEMS.length);
         break;
@@ -63,8 +55,8 @@ const Navigation: React.FC = () => {
         break;
       case 'Enter':
       case ' ':
-        e.preventDefault();
         if (activeIndex >= 0) {
+          e.preventDefault();
           navigate(NAV_ITEMS[activeIndex].path);
           setIsMobileMenuOpen(false);
         }
@@ -72,133 +64,130 @@ const Navigation: React.FC = () => {
     }
   }, [isMobileMenuOpen, activeIndex, navigate]);
 
-  // Focus management for navigation items
+  // Sync Focus and Scroll Lock
   React.useEffect(() => {
-    if (isMobileMenuOpen && activeIndex >= 0) {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+      // Slight delay to allow transition to start before focusing
+      const timer = setTimeout(() => setActiveIndex(0), 100);
+      return () => clearTimeout(timer);
+    } else {
+      document.body.style.overflow = '';
+      setActiveIndex(-1);
+    }
+  }, [isMobileMenuOpen]);
+
+  React.useEffect(() => {
+    if (activeIndex >= 0 && isMobileMenuOpen) {
       itemRefs.current[activeIndex]?.focus();
     }
   }, [activeIndex, isMobileMenuOpen]);
 
-  // Focus trap for mobile menu
-  React.useEffect(() => {
-    if (isMobileMenuOpen) {
-      setActiveIndex(0);
-      // Optional: Prevent body scroll when menu is open
-      document.body.style.overflow = 'hidden';
-    } else {
-      setActiveIndex(-1);
-      document.body.style.overflow = 'unset';
-    }
-  }, [isMobileMenuOpen]);
-
   return (
-    <>
-      <nav 
-        role="navigation"
-        aria-label="Main navigation"
-        className={`sticky top-0 z-30 transition-all duration-300 ${
-          isScrolled ? 'backdrop-blur-lg bg-white/90 shadow-lg' : 'bg-white shadow-md'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <Link 
-              to="/" 
-              className="text-xl font-bold text-emerald-700 hover:text-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 rounded-md px-2"
-            >
-              Sparkles
-            </Link>
-
-            {/* Desktop Nav */}
-            <div className="hidden md:flex items-center space-x-1">
-              {NAV_ITEMS.filter(i => i.path !== '/').map((item) => (
-                <Link
-                  key={item.id}
-                  to={item.path}
-                  className={`flex items-center px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 ${
-                    currentPageId === item.id
-                      ? 'bg-emerald-700 text-white shadow-md'
-                      : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-700'
-                  }`}
-                >
-                  <item.icon className="w-4 h-4 mr-2" />
-                  {item.label}
-                </Link>
-              ))}
+    <nav 
+      role="navigation"
+      aria-label="Main navigation"
+      className={`sticky top-0 z-50 transition-all duration-500 ${
+        isScrolled 
+          ? 'bg-white/80 backdrop-blur-md shadow-lg py-2' 
+          : 'bg-white shadow-sm py-4'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center">
+          <Link 
+            to="/" 
+            className="group flex items-center space-x-2 outline-none"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            <div className="w-8 h-8 bg-emerald-700 rounded-lg flex items-center justify-center transition-transform group-hover:rotate-12">
+              <span className="text-white font-bold text-xl italic">S</span>
             </div>
+            <span className="text-2xl font-black tracking-tight text-emerald-900 group-hover:text-emerald-700 transition-colors">
+              Sparkles
+            </span>
+          </Link>
 
-            {/* Mobile Toggle */}
-            <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-              className="md:hidden p-2 rounded-md text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
-            >
-              {isMobileMenuOpen 
-                ? <X className="h-6 w-6" /> 
-                : <Menu className="h-6 w-6" />
-              }
-            </button>
+          {/* Desktop Links */}
+          <div className="hidden md:flex items-center gap-1">
+            {NAV_ITEMS.filter(i => i.id !== 'home').map((item) => (
+              <Link
+                key={item.id}
+                to={item.path}
+                className={`relative px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                  currentPageId === item.id
+                    ? 'bg-emerald-700 text-white shadow-md'
+                    : 'text-gray-600 hover:bg-emerald-50 hover:text-emerald-700'
+                }`}
+              >
+                {item.label}
+              </Link>
+            ))}
           </div>
-        </div>
 
-        {/* Accessibility: Skip Link */}
-        <a href="#main-content" className="sr-only focus:not-sr-only absolute top-4 left-4 bg-emerald-700 text-white px-4 py-2 rounded-md z-[100]">
-          Skip to content
-        </a>
-      </nav>
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden relative z-[70] p-2 rounded-xl bg-emerald-50 text-emerald-700 active:scale-90 transition-transform focus:ring-2 focus:ring-emerald-500 outline-none"
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
+      </div>
 
       {/* Mobile Menu Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-300 md:hidden z-40 ${
-          isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+      <div 
+        className={`fixed inset-0 bg-emerald-950/20 backdrop-blur-sm transition-opacity duration-500 md:hidden ${
+          isMobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
 
       {/* Mobile Drawer */}
-      <div
+      <div 
         id="mobile-menu"
-        ref={drawerRef}
         onKeyDown={handleKeyDown}
-        className={`fixed top-0 right-0 h-full w-4/5 max-w-sm bg-white shadow-2xl z-50 md:hidden transform transition-transform duration-300 ease-in-out ${
-          isMobileMenuOpen ? 'translate-x-0' : 'translate-x-full'
+        className={`fixed top-0 left-0 w-full h-3/4 bg-white shadow-2xl z-50 md:hidden transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] ${
+          isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0'
         }`}
       >
-        <div className="flex justify-between items-center p-4 border-b border-gray-200">
-          <h2 className="text-lg font-semibold text-emerald-700">Menu</h2>
-          <button
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="p-2 text-gray-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-md"
-            aria-label="Close menu"
-          >
-            <X className="w-6 h-6" />
-          </button>
-        </div>
-        <div className="flex flex-col p-4">
-          {NAV_ITEMS.map((item, index) => (
-            <Link
-              key={item.id}
-              to={item.path}
-              ref={(el) => { itemRefs.current[index] = el; }}
-              tabIndex={isMobileMenuOpen ? 0 : -1}
-              onClick={() => setIsMobileMenuOpen(false)}
-              className={`flex items-center px-4 py-3 my-1 rounded-lg text-base font-medium transition-colors duration-150 ${
-                currentPageId === item.id
-                  ? 'bg-emerald-700 text-white shadow-sm'
-                  : 'text-gray-700 hover:bg-emerald-50 hover:text-emerald-800'
-              }`}
-            >
-              <item.icon className="w-5 h-5 mr-3" />
-              {item.label}
-              {currentPageId === item.id && (
-                <span className="ml-auto w-2 h-2 bg-white rounded-full" />
-              )}
-            </Link>
-          ))}
+        <div className="flex flex-col p-6 pt-20 pb-10 space-y-3">
+          {NAV_ITEMS.map((item, index) => {
+            const isActive = currentPageId === item.id;
+            return (
+              <Link
+                key={item.id}
+                to={item.path}
+                // ref={el => (itemRefs.current[index] = el)}
+                tabIndex={isMobileMenuOpen ? 0 : -1}
+                onClick={() => setIsMobileMenuOpen(false)}
+                // this is a staggered entry animation
+                style={{ 
+                  transitionDelay: isMobileMenuOpen ? `${index * 50}ms` : '0ms',
+                  transform: isMobileMenuOpen ? 'translateX(0)' : 'translateX(-20px)'
+                }}
+                className={`flex items-center justify-between px-5 py-4 rounded-2xl transition-all duration-300 outline-none ${
+                  isActive
+                    ? 'bg-emerald-700 text-white shadow-lg ring-4 ring-emerald-700/10'
+                    : 'bg-gray-50 text-gray-700 hover:bg-emerald-50 focus:bg-emerald-50 focus:ring-2 focus:ring-emerald-500'
+                }`}
+              >
+                <div className="flex items-center">
+                  <item.icon className={`w-5 h-5 mr-4 ${isActive ? 'text-emerald-200' : 'text-emerald-600'}`} />
+                  <span className="text-lg font-bold">{item.label}</span>
+                </div>
+                {isActive ? (
+                  <div className="w-2 h-2 bg-white rounded-full animate-ping" />
+                ) : (
+                  <ChevronRight size={18} className="text-gray-300" />
+                )}
+              </Link>
+            );
+          })}
         </div>
       </div>
-    </>
+    </nav>
   );
 };
 
