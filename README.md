@@ -18,6 +18,12 @@ Sparkles Kenya is a premium provider of hospitality supplies, delivering excelle
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
 
+## 🔠 TypeScript in This Project
+
+- Strongly typed React components are implemented across the codebase (for example in `src/components/*.tsx` and `src/pages/*.tsx`).
+- Shared data models are centralized in `src/types/index.ts` and consumed by `src/utils/data.ts` and UI components.
+- TypeScript tooling is configured through `tsconfig.json`, `tsconfig.app.json`, and `tsconfig.node.json` to keep development and build checks consistent.
+
 ## 📦 Getting Started
 
 ### Prerequisites
